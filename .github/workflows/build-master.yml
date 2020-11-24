@@ -1,0 +1,20 @@
+---
+name: Docker Build master
+
+on:
+  push:
+    branches: [master]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - uses: hathitrust/github_actions/build@v1
+        with:
+          image: ghcr.io/hathitrust/dex-shib-proxy-unstable
+          dockerfile: Dockerfile
+          tag: ${{ github.sha }}
+          push_latest: true

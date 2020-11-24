@@ -1,0 +1,52 @@
+name: Manual Deploy to Testing
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: tag
+        required: true
+
+env:
+  environment: testing
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - uses: hathitrust/github_actions/build@v1
+        with:
+          dockerfile: Dockerfile
+          image: ghcr.io/hathitrust/dex-shib-proxy-unstable
+          tag: ${{ github.event.inputs.tag }}
+          push_latest: false
+          registry_token: ${{ github.token }}
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment: testing
+    steps:
+      - uses: actions/checkout@v2
+    # Possible to get this as output from the build job?
+      - name: Find commit for tag
+        id: tag_check
+        uses: hathitrust/github_actions/validate-tag@v1
+        with:
+          tag: ${{ github.event.inputs.tag }}
+      - name: Deploy to ${{ env.environment }}
+        uses: mlibrary/deploy-to-kubernetes@v3
+        with:
+          registry_token: ${{ secrets.GITHUB_TOKEN }}
+          image: ghcr.io/hathitrust/dex-shib-proxy-unstable:${{ steps.tag_check.outputs.tag }}
+          cluster_ca: ${{ secrets.KUBERNETES_CA }}
+          cluster_server: ${{ secrets.KUBERNETES_SERVER }}
+          namespace_token: ${{ secrets.KUBERNETES_TOKEN }}
+          namespace: ${{ secrets.KUBERNETES_NAMESPACE }}
+          resource_type: deployment
+          resource_name: oidc-saml-proxy-dex
+          container: oidc-saml-proxy
