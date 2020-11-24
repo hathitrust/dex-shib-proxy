@@ -62,7 +62,7 @@ jobs:
 
     steps:
       - name: Set up Go
-        uses: actions/setup-go@v2
+        uses: actions/setup-go@v1
         with:
           go-version: 1.17
 
@@ -84,6 +84,7 @@ jobs:
       - name: Test
         run: make testall
         env:
+          DEX_FOO_USER_PASSWORD: $2a$10$33EMT0cVYVlPy6WAMCLsceLYjWhuHpbz5yuZxu/GAFj03J9Lytjuy
           DEX_MYSQL_DATABASE: dex
           DEX_MYSQL_USER: root
           DEX_MYSQL_PASSWORD: root
@@ -121,7 +122,7 @@ jobs:
 
           DEX_KUBERNETES_CONFIG_PATH: ~/.kube/config
 
-      - name: Lint
+      - name: Run linter
         run: make lint
 
       # Ensure proto generation doesn't depend on external packages.
