@@ -62,9 +62,13 @@ func (m *callback) HandleCallback(s connector.Scopes, r *http.Request) (connecto
 		UserID: remoteUser,
 	}
 
+	displayName := r.Header.Get("X-Shib-displayName")
+	if displayName != "" {
+		identity.Username = displayName
+	}
+
 	eppn := r.Header.Get("X-Shib-eduPersonPrincipalName")
 	if eppn != "" {
-		identity.Username = eppn
 		identity.PreferredUsername = eppn
 	}
 
