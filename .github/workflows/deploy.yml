@@ -1,4 +1,4 @@
-name: Deploy
+name: Manual Deploy (Production)
 
 on:
   workflow_dispatch:
@@ -16,5 +16,5 @@ jobs:
         kubectl config set-credentials default --token=${{ secrets.KUBERNETES_TOKEN }}
         kubectl config set-context default --cluster=cluster --user=default --namespace=oidc-saml-proxy-production
         kubectl config use-context default
-    - name: Manual Deploy
+    - name: Manual Deploy (Production)
       run: kubectl set image deployment oidc-saml-proxy oidc-saml-proxy=hathitrust/dex-shib-proxy:latest
