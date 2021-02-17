@@ -389,13 +389,25 @@ func (s *Server) handleConnectorCallback(w http.ResponseWriter, r *http.Request)
 	}
 
 	if err != nil && err.Error() == "need login redirect" {
+		loginRedirect := "/cgi/wayf"
+
+		if err := r.ParseForm(); err != nil {
+			s.renderError(r, w, http.StatusBadRequest, "Failed to parse request body.")
+			return
+		}
+		q := r.Form
+		entityID, err := url.QueryUnescape(q.Get("entityID"))
+		if err == nil {
+			loginRedirect = fmt.Sprintf("/Shibboleth.sso/Login?entityID=%s", url.QueryEscape(entityID))
+		}
+
 		targetURL := r.URL
 		targetURL.Scheme = s.issuerURL.Scheme
 		targetURL.Host = s.issuerURL.Host
 		s.logger.Debugf("redirecting, request url was %v", r.URL)
 		s.logger.Debugf("redirecting, server url is %v", s.issuerURL)
 		s.logger.Debugf("redirecting, target url is %v", targetURL)
-		http.Redirect(w, r, fmt.Sprintf("/cgi/wayf?target=%s", url.QueryEscape(targetURL.String())), http.StatusSeeOther)
+		http.Redirect(w, r, fmt.Sprintf("%s&target=%s", loginRedirect, url.QueryEscape(targetURL.String())), http.StatusSeeOther)
 		return
 	} else if err != nil {
 		s.logger.Errorf("Failed to authenticate: %v", err)
