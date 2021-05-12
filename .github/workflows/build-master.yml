@@ -18,7 +18,7 @@ jobs:
     - name: Clone latest repository
       uses: actions/checkout@v2
     - name: Build dex container image and push to DockerHub
-      uses: docker/build-push-action@v2
+      uses: docker/build-push-action@v2.4.0
       with:
         push: true
         tags: 'hathitrust/dex-shib-proxy-unstable:${{ github.sha }},hathitrust/dex-shib-proxy-unstable:latest'
