@@ -16,7 +16,7 @@ jobs:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
     - name: Clone latest repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v2.3.4
     - name: Tag latest release in DockerHub
       run: |
         docker pull hathitrust/dex-shib-proxy-unstable:${{ github.sha }}
