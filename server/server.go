@@ -170,6 +170,8 @@ type Server struct {
 
 	supportedResponseTypes map[string]bool
 
+	supportedGrantTypes []string
+
 	now func() time.Time
 
 	idTokensValidFor       time.Duration
@@ -210,14 +212,19 @@ func newServer(ctx context.Context, c Config, rotationStrategy rotationStrategy)
 		c.SupportedResponseTypes = []string{responseTypeCode}
 	}
 
-	supported := make(map[string]bool)
+	supportedRes := make(map[string]bool)
 	for _, respType := range c.SupportedResponseTypes {
 		switch respType {
 		case responseTypeCode, responseTypeIDToken, responseTypeToken:
 		default:
 			return nil, fmt.Errorf("unsupported response_type %q", respType)
 		}
-		supported[respType] = true
+		supportedRes[respType] = true
+	}
+
+	supportedGrant := []string{grantTypeAuthorizationCode, grantTypeRefreshToken, grantTypeDeviceCode} //default
+	if c.PasswordConnector != "" {
+		supportedGrant = append(supportedGrant, grantTypePassword)
 	}
 
 	webFS := web.FS()
@@ -250,7 +257,8 @@ func newServer(ctx context.Context, c Config, rotationStrategy rotationStrategy)
 		issuerURL:              *issuerURL,
 		connectors:             make(map[string]Connector),
 		storage:                newKeyCacher(c.Storage, now),
-		supportedResponseTypes: supported,
+		supportedResponseTypes: supportedRes,
+		supportedGrantTypes:    supportedGrant,
 		idTokensValidFor:       value(c.IDTokensValidFor, 24*time.Hour),
 		authRequestsValidFor:   value(c.AuthRequestsValidFor, 24*time.Hour),
 		deviceRequestsValidFor: value(c.DeviceRequestsValidFor, 5*time.Minute),
