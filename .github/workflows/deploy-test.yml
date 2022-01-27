@@ -17,4 +17,4 @@ jobs:
         kubectl config set-context github --cluster=cluster --user=github --namespace=oidc-saml-proxy-testing
         kubectl config use-context github
     - name: Manual Deploy (Testing)
-      run: kubectl set image deployment oidc-saml-proxy oidc-saml-proxy=hathitrust/dex-shib-proxy-unstable:latest
+      run: kubectl set image deployment oidc-saml-proxy oidc-saml-proxy=ghcr.io/hathitrust/dex-shib-proxy-unstable:latest
