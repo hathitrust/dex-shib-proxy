@@ -19,7 +19,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Clone latest repository
         uses: actions/checkout@v2
-      - name: Tag latest release in DockerHub
+      - name: Tag latest release in GHCR
         run: |
           docker pull ghcr.io/hathitrust/dex-shib-proxy-unstable:${{ github.sha }}
           docker tag ghcr.io/hathitrust/dex-shib-proxy-unstable:${{ github.sha }} ghcr.io/hathitrust/dex-shib-proxy:${{ github.event.release.tag_name }}
