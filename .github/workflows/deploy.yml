@@ -30,7 +30,7 @@ jobs:
             echo "Aborting deployment."
             false
           fi
-      - uses: azure/setup-kubectl@v1
+      - uses: azure/setup-kubectl@v3
       - name: Authenticate with kubernetes
         run: |
           mkdir -p ${HOME}/.kube/certs/cluster
