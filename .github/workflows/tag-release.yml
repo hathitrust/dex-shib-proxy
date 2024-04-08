@@ -1,4 +1,3 @@
----
 name: Docker Tag Latest Release
 
 on:
@@ -6,23 +5,12 @@ on:
     types: [released]
 
 jobs:
-  build:
+  tag-release:
     runs-on: ubuntu-latest
     steps:
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v1
+      - uses: hathitrust/github_actions/tag-release@v1
         with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Clone latest repository
-        uses: actions/checkout@v2
-      - name: Tag latest release in GHCR
-        run: |
-          docker pull ghcr.io/hathitrust/dex-shib-proxy-unstable:${{ github.sha }}
-          docker tag ghcr.io/hathitrust/dex-shib-proxy-unstable:${{ github.sha }} ghcr.io/hathitrust/dex-shib-proxy:${{ github.event.release.tag_name }}
-          docker tag ghcr.io/hathitrust/dex-shib-proxy-unstable:${{ github.sha }} ghcr.io/hathitrust/dex-shib-proxy:latest
-          docker push ghcr.io/hathitrust/dex-shib-proxy:${{ github.event.release.tag_name }}
-          docker push ghcr.io/hathitrust/dex-shib-proxy:latest
+          registry_token: ${{ github.token }}
+          existing_tag: ghcr.io/${{ github.repository }}-unstable:${{ github.sha }}
+          image: ghcr.io/${{ github.repository }}
+          new_tag: ${{ github.event.release.tag_name }}
