@@ -1,4 +1,4 @@
-name: CI
+name: Run Tests
 
 on:
   push:
@@ -149,20 +149,6 @@ jobs:
 
       - name: Lint
         run: make lint
-
-  artifacts:
-    name: Artifacts
-    uses: ./.github/workflows/artifacts.yaml
-    with:
-      publish: ${{ github.event_name == 'push' }}
-    secrets:
-      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-    permissions:
-      contents: read
-      packages: write
-      id-token: write
-      security-events: write
 
   dependency-review:
     name: Dependency review
