@@ -1,3 +1,6 @@
+> [!IMPORTANT]  
+> This fork is no longer in use. HathiTrust now uses the upstream https://github.com/dexidp/dex with the built-in authproxy connector, which supports additional claims via the authproxy connector as of v2.38.
+
 # dex - A federated OpenID Connect provider
 
 ![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/dexidp/dex/ci.yaml?style=flat-square&branch=master)
